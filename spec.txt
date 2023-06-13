@@ -1,0 +1,6 @@
+App para resolver um determinado problema do dia a dia, 'Quando ligo o computador não sei se a hora está certa e tenho que ouvir as rádios até ouvir a hora atual'.
+O programa deve ser simples, sem interface gráfica.
+Ele deve buscar a hora atual da Internet por meio de uma API pública.
+ele verificará se a hora atual do sistema corresponde à hora da Internet.
+Se a hora estiver igual ele diz: 'O relógio do seu sistema está ok!'
+se não: 'O relógio do seu sistema está errado, deseja corrigir? (s/n))
