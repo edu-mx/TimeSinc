@@ -4,3 +4,5 @@ Ele deve buscar a hora atual da Internet por meio de uma API pública.
 ele verificará se a hora atual do sistema corresponde à hora da Internet.
 Se a hora estiver igual ele diz: 'O relógio do seu sistema está ok!'
 se não: 'O relógio do seu sistema está errado, deseja corrigir? (s/n))
+Com um novo problema, uma nova funcionalidade pode ser adicionada.
+Agora preciso que a data seja ajustada também com a internet.
