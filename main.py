@@ -8,16 +8,19 @@ import requests
 from datetime import datetime
 import os
 
-# Dados da internet
+
 class API():
     url = 'http://worldtimeapi.org/api/timezone/America/Sao_Paulo'
-    def time(self):
+    time = ''
+    date = ''
+    def __init__(self):
         try:
             response = requests.get(self.url)
             if response.status_code == 200:
                 dados = response.json()
-                hora = dados['datetime']
-                return hora[11:16]
+                data_hora = dados['datetime']
+                self.time = data_hora[11:16]
+                self.date = data_hora[:10]
 
             else:
                 print('Não foi possível obter o horário da internet.')
@@ -26,57 +29,41 @@ class API():
             print('Erro, não foi possível conectar-se a internet.'+str(erro))
             exit()
 
-    def date(self):
-        try:
-            response = requests.get(self.url)
-            if response.status_code == 200:
-                dados = response.json()
-                data = dados['datetime']
-                return data[:10]
 
-            else:
-                print('Erro, Não foi possível obter a data da internet.')
-                exit()
-        except Exception as erro:
-            print('Erro, não foi possível conectar-se a internet.'+str(erro))
-            exit()
-
-# dados do computador
-class computer():
+class Computer():
     dados = datetime.now()
-    def time(self):
-        hora= str(self.dados)
-        return hora[11:16]
+    time = ''
+    date = ''
+    def __init__(self):
+        data_hora= str(self.dados)
+        self.time = data_hora[11:16]
+        self.date = data_hora[:10]
 
-    def date(self):
-        data = str(self.dados)
-        return data[:10]
-
-computador = computer()
+computador = Computer()
 internet = API()
 
 # funções para sincronizar
 def timesinc():
-    nova_hora = API()
-    cmd = 'time '+nova_hora.time()
+    dados = API()
+    cmd = 'time '+dados.time
     os.system(cmd)
-    print('Horário alterado com sucesso!')
+    print('horário ajustado...')
     exit()
 
 def datesinc():
-    dados = API()
-    date_split = dados.date().split('-')
-    new_date = '{}/{}/{}'.format(date_split[2], date_split[1], date_split[0])
-    os.system('date '+new_date)
-    print('Data alterada com sucesso!'+new_date)
+    internet_data = API()
+    data_EUA = datetime.strptime(internet_data.date, "%Y-%m-%d")
+    data_Br = data_EUA.strftime("%d/%m/%Y")
+    os.system('date '+ str(data_Br))
+    print('Data ajustada...')
     step_time()
 
 loop = True
 def step_time():
     loop = False
     while True:
-        if internet.time() != computador.time():
-            print(f'Hora da internet: {internet.time()}.\nHora do sistema: {computador.time()}.')
+        if internet.time != computador.time:
+            print(f'Hora da internet: {internet.time}.\nHora do sistema: {computador.time}.')
             option_time = input('O horário precisa ser ajustado, deseja fazer isso agora?\tS/sim, N/não.')
             if option_time.upper() == 'N':
                 print('Saindo sem ajustar a hora...')
@@ -91,8 +78,8 @@ def step_time():
 
 def step_date():
     while loop!=False:
-        if internet.date() != computador.date():
-            print(f'Data do sistema: {computador.date()}.\nData da internet: {internet.date()}.')
+        if internet.date != computador.date:
+            print(f'Data do sistema: {computador.date}.\nData da internet: {internet.date}.')
             option_date = input('A data precisa ser ajustada, deseja fazer isso agora?\tS/sim, N/não.')
             if option_date.upper() == 'N':
                 print('Saindo sem ajustar a data...')
