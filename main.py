@@ -1,5 +1,5 @@
 '''
-Programa simples para sincronizar o horário do Windows com o horário da Internet, útil nos casos em que seu computador não pode fazer isso automaticamente.
+script para alterar data e hora do computador
 * by Eduardo Araújo - diaseduardo139@gmail.com
 * Execute em um terminal como administrador
 '''
@@ -16,6 +16,7 @@ class API():
     def __init__(self):
         try:
             response = requests.get(self.url)
+
             if response.status_code == 200:
                 dados = response.json()
                 data_hora = dados['datetime']
@@ -24,10 +25,10 @@ class API():
 
             else:
                 print('Não foi possível obter o horário da internet.')
-                exit()
+                raise
         except Exception as erro:
             print('Erro, não foi possível conectar-se a internet.'+str(erro))
-            exit()
+            raise
 
 
 class Computer():
@@ -48,7 +49,7 @@ def timesinc():
     cmd = 'time '+dados.time
     os.system(cmd)
     print('horário ajustado...')
-    exit()
+    return
 
 def datesinc():
     internet_data = API()
@@ -56,41 +57,49 @@ def datesinc():
     data_Br = data_EUA.strftime("%d/%m/%Y")
     os.system('date '+ str(data_Br))
     print('Data ajustada...')
-    step_time()
+    loop_time()
 
-loop = True
-def step_time():
-    loop = False
+def loop_time():
     while True:
+
         if internet.time != computador.time:
             print(f'Hora da internet: {internet.time}.\nHora do sistema: {computador.time}.')
             option_time = input('O horário precisa ser ajustado, deseja fazer isso agora?\tS/sim, N/não.')
+
             if option_time.upper() == 'N':
                 print('Saindo sem ajustar a hora...')
                 break
+
             elif option_time.upper() == 'S':
                 timesinc()
                 break
 
         else:
             print('A hora não precisa ser ajustada, fique tranquilo!')
-            exit()
+            break
 
-def step_date():
-    while loop!=False:
+def loop_date():
+    while True:
+
         if internet.date != computador.date:
             print(f'Data do sistema: {computador.date}.\nData da internet: {internet.date}.')
             option_date = input('A data precisa ser ajustada, deseja fazer isso agora?\tS/sim, N/não.')
+
             if option_date.upper() == 'N':
                 print('Saindo sem ajustar a data...')
-                step_time()
+                loop_time()
+                break
+
             elif option_date.upper() == 'S':
                 datesinc()
+                break
 
         else:
             print('A data não precisa ser ajustada, fique tranquilo!')
-            step_time()
+            loop_time()
+            break
 
 def main():
-    step_date()
+    loop_date()
+
 main()
